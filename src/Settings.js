@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { v4 } from 'uuid';
 import swal from 'sweetalert2';
-import {Card, CardTitle} from 'material-ui/Card';
+import {Card, CardTitle, CardText} from 'material-ui/Card';
 import {
     Link
 } from 'react-router-dom';
@@ -15,7 +15,7 @@ class Settings extends Component {
 
         this.state = {
             nameField: 'Entrata edificio',
-            camField: '192.168.0.133:8888'
+            camField: '192.168.0.119:8888'
         }
     }
 
@@ -43,6 +43,11 @@ class Settings extends Component {
             .catch(() => swal('Errore', 'La videocamera non è raggiungibile', 'error'))
     }
 
+    onDeleteCam = id => {
+        this.props.onDeleteCam(id);
+        console.log('asd');
+    }
+
     render() {
         var {cams} = this.props;
         return (
@@ -50,10 +55,12 @@ class Settings extends Component {
                 {cams.length==0
                     ? <h3 style={{textAlign: 'center'}}>Non ci sono videocamera configurate!</h3>
                     : cams.map(cam =>  (
-                        <Card key={cam.id}>
+                        <Card key={cam.id} style={{marginBottom: '25px'}}>
                             <CardTitle title={cam.name} subtitle={`Indirizzo: ${cam.host}`} />
-                            <Link to={`/camera/${cam.id}`}>Go to cam</Link>
-                            {/*<CardText>{JSON.stringify(cam)}</CardText>*/}
+                            <CardText>
+                                <RaisedButton><Link to={`/camera/${cam.id}`}>Guarda</Link></RaisedButton>
+                                <RaisedButton style={{marginLeft: '15px'}} onClick={() => this.onDeleteCam(cam.id)}>Rimuovi</RaisedButton>
+                            </CardText>
                         </Card>
                     ))
                 }
@@ -70,7 +77,7 @@ class Settings extends Component {
                         value={this.state.nameField}
                         onChange={e => this.setState({nameField: e.target.value})}
                     />
-                    <RaisedButton label="Aggiungi" onClick={this.onAddCam} />
+                    <RaisedButton style={{marginLeft: '15px'}} label="Aggiungi" onClick={this.onAddCam} />
                 </div>
             </div>
         );
@@ -82,6 +89,7 @@ export default connect(
         cams: state.cams
     }),
     dispatch => ({
-        onAddCam: cam => dispatch({type: 'CAM_ADD', cam})
+        onAddCam: cam => dispatch({type: 'CAM_ADD', cam}),
+        onDeleteCam: id => dispatch({type: 'CAM_DELETE', id})
     })
 )(Settings);

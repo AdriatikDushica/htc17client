@@ -12,13 +12,12 @@ class Settings extends Component {
     }
 
     componentDidMount() {
-        // var ws = new WebSocket(`ws://${this.props.cam.host}/ws`);
-        var ws = new WebSocket(`ws://192.168.0.133:8888/ws`);
+        var ws = new WebSocket(`ws://${this.props.cam.host}/ws`);
+        // var ws = new WebSocket(`ws://192.168.0.133:8888/ws`);
 
         ws.onmessage =  (evt) => {
-            //document.getElementById("stream").src = 'data:image/jpg;base64,' + evt.data;
-            this.setState({img: 'data:image/jpg;base64,' + evt.data});
-            console.log('asd');
+            // this.setState({img: 'data:image/jpg;base64,' + evt.data});
+            document.getElementById('thecam').src = 'data:image/jpg;base64,' + evt.data;
         };
 
         ws.onerror = function (e) {
@@ -26,15 +25,18 @@ class Settings extends Component {
         };
 
         ws.onclose = function() {
+            
         };
+    }
 
+    componentWillUnmount() {
+        console.log('unmount');
     }
 
     render() {
-        var {cam} = this.props;
         return (
             <div className="container" style={{marginTop: '50px'}}>
-                <img src={this.state.img} />
+                <img id="thecam" />
             </div>
         );
     }

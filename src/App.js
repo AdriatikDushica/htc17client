@@ -19,6 +19,8 @@ function cams(state = [], action) {
     switch (action.type) {
         case 'CAM_ADD':
             return [...state, action.cam];
+        case 'CAM_DELETE':
+            return state.filter(cam => cam.id!=action.id);
         default:
             return state;
     }

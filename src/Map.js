@@ -17,6 +17,9 @@ class Map extends Component {
             L.marker([cam.coordinates[0], cam.coordinates[1]]).addTo(map);
         });
     }
+    componentWillUnmount() {
+        console.log('unmount');
+    }
     render() {
         return <div id="home-map" style={{width: '100%', height: this.props.windowSize.height}}></div>
     }
