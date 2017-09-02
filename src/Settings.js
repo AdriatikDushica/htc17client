@@ -58,8 +58,8 @@ class Settings extends Component {
                         <Card key={cam.id} style={{marginBottom: '25px'}}>
                             <CardTitle title={cam.name} subtitle={`Indirizzo: ${cam.host}`} />
                             <CardText>
-                                <RaisedButton><Link to={`/camera/${cam.id}`}>Guarda</Link></RaisedButton>
-                                <RaisedButton style={{marginLeft: '15px'}} onClick={() => this.onDeleteCam(cam.id)}>Rimuovi</RaisedButton>
+                                <Link to={`/camera/${cam.id}`}>Guarda</Link>
+                                <a href="#" style={{marginLeft: '15px'}} onClick={() => this.onDeleteCam(cam.id)}>Rimuovi</a>
                             </CardText>
                         </Card>
                     ))
