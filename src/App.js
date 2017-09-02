@@ -8,14 +8,54 @@ import {
     BrowserRouter as Router,
     Route,
     Link
-} from 'react-router-dom'
-import L from 'leaflet';
+} from 'react-router-dom';
+import Map from './Map';
+import Settings from './Settings';
+import Camera from './Camera';
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux'
 
-var provider = 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWRyaWF0aWsiLCJhIjoiY2o3MzRxd2Q1MDN0bTJxdGNha3F2dWZqbiJ9.lNcK1We3R9LuUW5VGuYs6Q';
-// var provider = 'http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png';
+function cams(state = [], action) {
+    switch (action.type) {
+        case 'CAM_ADD':
+            return [...state, action.cam];
+        default:
+            return state;
+    }
+}
 
-const theme = {
+function windowSize(state = {width: 0, height: 0}, action) {
+    switch (action.type) {
+        case 'WINDOW_SIZE':
+            return {
+                width: action.w,
+                height: action.y
+            };
+        default:
+            return state;
+    }
+}
+
+export const store = createStore(combineReducers({
+    cams,
+    windowSize
+}), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
+let onresize = function(event) {
+    var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+    // alert(x + ' × ' + y);
+    store.dispatch({type: 'WINDOW_SIZE', x, y});
 };
+
+window.onresize = onresize;
+onresize();
+
+const theme = {};
 
 class RightMenuButtons extends Component {
     static muiName = 'FlatButton';
@@ -30,42 +70,24 @@ class RightMenuButtons extends Component {
     }
 }
 
-class Map extends Component {
-    componentDidMount() {
-        var map = L.map('home-map').setView([46.7818348,8.2925331], 8);
-
-        L.tileLayer(provider, {
-            maxZoom: 18
-        }).addTo(map);
-    }
-    render() {
-        return <div id="home-map"></div>
-    }
-}
-
-class EntryApp extends Component {
-    render() {
-        return (
-            <div>
-                <AppBar
-                    title="SafeCity"
-                    iconElementLeft={null}
-                    iconElementRight={<RightMenuButtons />}
-                />
-                <Route path="/" exact component={() =>  <Map />}/>
-                <Route path="/settings" component={() => <div>settings</div>}/>
-            </div>
-        );
-    }
-}
-
 class App extends Component {
     render() {
         return (
             <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-                <Router>
-                    <EntryApp/>
-                </Router>
+                <Provider store={store}>
+                    <Router>
+                        <div>
+                            <AppBar
+                                title="SafeCity"
+                                iconElementLeft={null}
+                                iconElementRight={<RightMenuButtons />}
+                            />
+                            <Route path="/" exact component={() =>  <Map />}/>
+                            <Route path="/settings" component={() => <Settings />}/>
+                            <Route path="/camera/:id" component={() => <Camera />}/>
+                        </div>
+                    </Router>
+                </Provider>
             </MuiThemeProvider>
         );
     }
