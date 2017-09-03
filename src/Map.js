@@ -7,7 +7,7 @@ var provider = 'https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}
 
 class Map extends Component {
     componentDidMount() {
-        var map = L.map('home-map').setView([46.7818348,8.2925331], 8);
+        var map = L.map('home-map').setView([45.8367, 9.0246], 15);
 
         L.tileLayer(provider, {
             maxZoom: 18

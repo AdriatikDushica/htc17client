@@ -12,10 +12,14 @@ import {
 import Map from './Map';
 import Settings from './Settings';
 import Camera from './Camera';
+import Cams from './Cams';
 import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux'
 
-function cams(state = [], action) {
+function cams(state = [
+        {id: 'kg4vk2gjh3v4-2bjh4j2k3', name: 'Via Corso San Gottardo', host: '192.168.0.119:8888', coordinates: [45.8367, 9.0246]},
+        {id: 'kg4vk2gjh3v4-afsd34', name: 'Via Dante Alighieri', host: '192.168.0.133:8888', coordinates: [45.8367, 9.0226]}
+    ], action) {
     switch (action.type) {
         case 'CAM_ADD':
             return [...state, action.cam];
@@ -57,7 +61,11 @@ let onresize = function(event) {
 window.onresize = onresize;
 onresize();
 
-const theme = {};
+const theme = {
+  palette: {
+    primary1Color: 'black'
+  },
+};
 
 class RightMenuButtons extends Component {
     static muiName = 'FlatButton';
@@ -66,6 +74,7 @@ class RightMenuButtons extends Component {
         return (
             <div>
                 <FlatButton {...this.props} label="Mappa"  containerElement={<Link to="/"/>} />
+                <FlatButton {...this.props} label="Videocamere"  containerElement={<Link to="/videocamere"/>} />
                 <FlatButton {...this.props} label="Impostazioni"  containerElement={<Link to="/settings"/>} />
             </div>
         );
@@ -80,12 +89,13 @@ class App extends Component {
                     <Router>
                         <div>
                             <AppBar
-                                title="SafeCity"
+                                title="SmartCam4SafeCity"
                                 iconElementLeft={null}
                                 iconElementRight={<RightMenuButtons />}
                             />
                             <Route path="/" exact component={() =>  <Map />}/>
                             <Route path="/settings" component={() => <Settings />}/>
+                            <Route path="/videocamere" component={() => <Cams />}/>
                             <Route path="/camera/:id" component={() => <Camera />}/>
                         </div>
                     </Router>
